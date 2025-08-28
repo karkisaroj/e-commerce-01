@@ -11,7 +11,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  late Future<List<CartModel>> futureCart;
+  Future<List<CartModel>>? futureCart;
 
   final Color primaryColor = Color.fromARGB(255, 39, 99, 105);
   final Color cardColor = Color(0xFFF5F6FA);
@@ -32,19 +32,22 @@ class _CartScreenState extends State<CartScreen> {
         title: Text("Cart", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => DashboardScreen()),
             );
           },
-          icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
         ),
         elevation: 2,
       ),
       body: FutureBuilder<List<CartModel>>(
         future: futureCart,
         builder: (context, snapshot) {
+          if (futureCart == null) {
+            return Center(child: CircularProgressIndicator());
+          }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(color: primaryColor),
@@ -68,6 +71,7 @@ class _CartScreenState extends State<CartScreen> {
                   'product': product,
                   'quantity': product.quantity ?? 1,
                   'subtotal': subtotal,
+                  'cartId': cart.id,
                 });
               }
             }
@@ -79,6 +83,7 @@ class _CartScreenState extends State<CartScreen> {
                     itemCount: allProducts.length,
                     separatorBuilder: (context, index) => SizedBox(height: 12),
                     itemBuilder: (context, index) {
+                      final cartId = allProducts[index]['cartId'];
                       final product = allProducts[index]['product'];
                       final quantity = allProducts[index]['quantity'] ?? 1;
                       final subtotal = allProducts[index]['subtotal'] ?? 0.0;
@@ -223,7 +228,21 @@ class _CartScreenState extends State<CartScreen> {
                                   Icons.delete_outline,
                                   color: Colors.redAccent,
                                 ),
-                                onPressed: () async {},
+                                onPressed: () async {
+                                  bool success = await deleteCarts(cartId);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Deleted cart id:$cartId,success:$success',
+                                      ),
+                                    ),
+                                  );
+                                  if (success) {
+                                    setState(() {
+                                      futureCart = fetchCarts();
+                                    });
+                                  }
+                                },
                               ),
                             ],
                           ),

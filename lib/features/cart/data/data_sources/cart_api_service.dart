@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:developer';
 import 'package:ecommerce_app/features/cart/data/models/cart_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,4 +14,10 @@ Future<List<CartModel>> fetchCarts() async {
   } else {
     throw Exception("Failed to load carts");
   }
+}
+
+Future<bool> deleteCarts(int id) async {
+  final response = await http.delete(Uri.parse('$baseUrl/$id'));
+  log("Status code: ${response.statusCode}");
+  return response.statusCode == 200;
 }

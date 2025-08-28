@@ -9,6 +9,7 @@ class ProductModel {
   final double discountPercentage;
   final int stock;
   final String thumbnail;
+  final List<String> images;
   final int quantity;
   ProductModel({
     required this.id,
@@ -19,6 +20,7 @@ class ProductModel {
     required this.discountPercentage,
     required this.stock,
     required this.thumbnail,
+    this.images = const [],
     this.quantity = 1,
   });
 
@@ -33,6 +35,8 @@ class ProductModel {
           (json['discountPercentage'] as num?)?.toDouble() ?? 0.0,
       stock: json['stock'] as int? ?? 0,
       thumbnail: json['thumbnail'] ?? '',
+      images:
+          (json['images'] as List?)?.map((e) => e.toString()).toList() ?? [],
       quantity: json['quantity'] as int? ?? 1,
     );
   }
