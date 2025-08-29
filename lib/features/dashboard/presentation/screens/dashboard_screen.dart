@@ -113,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(width: 2),
                   Text(
-                    'Paris',
+                    'Kathmandu',
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
